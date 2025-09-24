@@ -8,10 +8,14 @@ body {
     background-color: #53bece; /* Flappy bird sky color */
     font-family: Arial, sans-serif;
     color: white;
-    touch-action: none; /* Prevents browser gestures like pull-to-refresh */
     overflow: hidden;
 }
 
+/* 
+    Use 'touch-action: manipulation' on the game container instead of 'none' on the body. 
+    This specifically targets the element that needs fast taps while allowing other
+    gestures on other parts of the page, which is better for accessibility.
+*/
 #game-container {
     position: relative;
     width: 100%;
@@ -20,6 +24,7 @@ body {
     max-height: 720px; /* Constrain height for desktop preview */
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    touch-action: manipulation; /* Eliminates the 300ms tap delay */
 }
 
 #game-canvas {
@@ -66,6 +71,9 @@ button {
     color: white;
     border: none;
     border-radius: 5px;
+    /* Also include touch-action on the button for good measure,
+       though manipulation on the parent game container should suffice. */
+    touch-action: manipulation;
 }
 
 #in-game-ui {
