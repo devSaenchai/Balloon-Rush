@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Balloon Rush</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen">
+            <h1>Balloon Rush</h1>
+            <div class="score-display">
+                <p>High Score:</p>
+                <p id="start-high-score">0</p>
+            </div>
+            <button id="start-button">Start Game</button>
+        </div>
+
+        <!-- In-Game UI -->
+        <div id="in-game-ui">
+            <div class="score-container">
+                <p>Score: <span id="current-score">0</span></p>
+                <p>High Score: <span id="highest-score">0</span></p>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen hidden">
+            <h1>Game Over</h1>
+            <div class="score-display">
+                <p>Final Score:</p>
+                <p id="final-score">0</p>
+            </div>
+            <div class="score-display">
+                <p>High Score:</p>
+                <p id="game-over-high-score">0</p>
+            </div>
+            <button id="restart-button">Tap to Restart</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
