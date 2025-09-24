@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const finalScoreDisplay = document.getElementById('final-score');
   const gameOverHighScoreDisplay = document.getElementById('game-over-high-score');
 
-  let gameLoop;
+  let animationFrame;
   let balloon;
   let obstacles;
   let score;
@@ -64,92 +64,93 @@ document.addEventListener('DOMContentLoaded', () => {
     score = 0;
     currentScoreDisplay.textContent = score;
     highestScoreDisplay.textContent = highScore;
-    if (gameLoop) clearInterval(gameLoop);
-    gameLoop = setInterval(update, 1000 / 60);
+    animationFrame = requestAnimationFrame(update);
   }
 
   function update() {
-  if (!isPlaying || isGameOver) return;
+    if (!isPlaying || isGameOver) return;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  balloon.velocity += balloon.gravity;
-  balloon.y += balloon.velocity;
+    balloon.velocity += balloon.gravity;
+    balloon.y += balloon.velocity;
 
-  if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 200) {
-    const gapY = Math.random() * (canvas.height - OBSTACLE_GAP - 100) + 50;
-    obstacles.push({
-      x: canvas.width,
-      gapY: gapY,
-      width: OBSTACLE_WIDTH,
-      scored: false,
+    if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 200) {
+      const gapY = Math.random() * (canvas.height - OBSTACLE_GAP - 100) + 50;
+      obstacles.push({
+        x: canvas.width,
+        gapY: gapY,
+        width: OBSTACLE_WIDTH,
+        scored: false,
+      });
+    }
+
+    obstacles.forEach((obstacle, index) => {
+      obstacle.x -= SCROLL_SPEED;
+
+      ctx.fillStyle = '#4CAF50';
+      ctx.fillRect(obstacle.x, 0, obstacle.width, obstacle.gapY - OBSTACLE_GAP / 2);
+      ctx.fillRect(obstacle.x, obstacle.gapY + OBSTACLE_GAP / 2, obstacle.width, canvas.height - (obstacle.gapY + OBSTACLE_GAP / 2));
+
+      if (
+        balloon.x + balloon.radius > obstacle.x &&
+        balloon.x - balloon.radius < obstacle.x + obstacle.width &&
+        (balloon.y - balloon.radius < obstacle.gapY - OBSTACLE_GAP / 2 ||
+          balloon.y + balloon.radius > obstacle.gapY + OBSTACLE_GAP / 2)
+      ) {
+        endGame();
+      }
+
+      if (balloon.x > obstacle.x + obstacle.width && !obstacle.scored) {
+        score++;
+        currentScoreDisplay.textContent = score;
+        obstacle.scored = true;
+      }
+
+      if (obstacle.x + obstacle.width < 0) {
+        obstacles.splice(index, 1);
+      }
     });
-  }
 
-  obstacles.forEach((obstacle, index) => {
-    obstacle.x -= SCROLL_SPEED;
-
-    ctx.fillStyle = '#4CAF50';
-    ctx.fillRect(obstacle.x, 0, obstacle.width, obstacle.gapY - OBSTACLE_GAP / 2);
-    ctx.fillRect(obstacle.x, obstacle.gapY + OBSTACLE_GAP / 2, obstacle.width, canvas.height - (obstacle.gapY + OBSTACLE_GAP / 2));
-
-    if (
-      balloon.x + balloon.radius > obstacle.x &&
-      balloon.x - balloon.radius < obstacle.x + obstacle.width &&
-      (balloon.y - balloon.radius < obstacle.gapY - OBSTACLE_GAP / 2 ||
-        balloon.y + balloon.radius > obstacle.gapY + OBSTACLE_GAP / 2)
-    ) {
+    if (balloon.y + balloon.radius > canvas.height || balloon.y - balloon.radius < 0) {
       endGame();
     }
 
-    if (balloon.x > obstacle.x + obstacle.width && !obstacle.scored) {
-      score++;
-      currentScoreDisplay.textContent = score;
-      obstacle.scored = true;
+    ctx.fillStyle = 'red';
+    ctx.beginPath();
+    ctx.arc(balloon.x, balloon.y, balloon.radius, 0, 2 * Math.PI);
+    ctx.fill();
+
+    animationFrame = requestAnimationFrame(update);
     }
 
-    if (obstacle.x + obstacle.width < 0) {
-      obstacles.splice(index, 1);
+  function endGame() {
+    isPlaying = false;
+    isGameOver = true;
+    cancelAnimationFrame(animationFrame);
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem('balloonHighScore', highScore);
     }
-  });
-
-  if (balloon.y + balloon.radius > canvas.height || balloon.y - balloon.radius < 0) {
-    endGame();
+    finalScoreDisplay.textContent = score;
+    gameOverHighScoreDisplay.textContent = highScore;
+    gameOverScreen.classList.remove('hidden');
   }
 
-  ctx.fillStyle = 'red';
-  ctx.beginPath();
-  ctx.arc(balloon.x, balloon.y, balloon.radius, 0, 2 * Math.PI);
-  ctx.fill();
-}
-
-function endGame() {
-  isPlaying = false;
-  isGameOver = true;
-  clearInterval(gameLoop);
-  if (score > highScore) {
-    highScore = score;
-    localStorage.setItem('balloonHighScore', highScore);
+  function updateHighScoreDisplay() {
+    startHighScoreDisplay.textContent = highScore;
   }
-  finalScoreDisplay.textContent = score;
-  gameOverHighScoreDisplay.textContent = highScore;
-  gameOverScreen.classList.remove('hidden');
-}
 
-function updateHighScoreDisplay() {
-  startHighScoreDisplay.textContent = highScore;
-}
+  function init() {
+    const resizeCanvas = () => {
+      const container = document.getElementById('game-container');
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    };
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    resetGame();
+  }
 
-function init() {
-  const resizeCanvas = () => {
-    const container = document.getElementById('game-container');
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
-  };
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-  resetGame();
-}
-
-init();
+  init();
 });
