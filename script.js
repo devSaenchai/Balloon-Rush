@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const GRAVITY = 0.5;
     const JUMP_POWER = -8;
     const OBSTACLE_WIDTH = 50;
-    const OBSTACLE_GAP = 120;
+    const OBSTACLE_GAP = 150;
     const SCROLL_SPEED = 2;
     const BALLOON_SIZE = 40;
 
@@ -188,3 +188,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     init();
 });
+
