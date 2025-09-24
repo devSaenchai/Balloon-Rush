@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isPlaying = false;
   let isGameOver = false;
 
-  const GRAVITY = 0.5;
+  const GRAVITY = 0.3;
   const JUMP_POWER = -8;
   const OBSTACLE_WIDTH = 50;
   const OBSTACLE_GAP = 150;
@@ -154,3 +154,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   init();
 });
+
