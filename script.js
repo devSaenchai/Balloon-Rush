@@ -19,12 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
   let isPlaying = false;
   let isGameOver = false;
 
-  const GRAVITY = 0.3;
-  const JUMP_POWER = -5;
+  const GRAVITY = 0.5;
+  const JUMP_POWER = -8;
   const OBSTACLE_WIDTH = 50;
   const OBSTACLE_GAP = 150;
   const SCROLL_SPEED = 2;
   const BALLOON_RADIUS = 20;
+
+  const frameDuration = 1000 / 60; // 60 FPS
+  let lastTime = 0;
+  let deltaTime = 0;
 
   function resetGame() {
     balloon = {
@@ -64,11 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
     score = 0;
     currentScoreDisplay.textContent = score;
     highestScoreDisplay.textContent = highScore;
+    lastTime = performance.now();
     animationFrame = requestAnimationFrame(update);
   }
 
-  function update() {
-    if (!isPlaying || isGameOver) return;
+  function update(timestamp) {
+  if (!isPlaying || isGameOver) return;
+
+  deltaTime += timestamp - lastTime;
+  lastTime = timestamp;
+
+  while (deltaTime >= frameDuration) {
+    deltaTime -= frameDuration;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -120,39 +131,38 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.beginPath();
     ctx.arc(balloon.x, balloon.y, balloon.radius, 0, 2 * Math.PI);
     ctx.fill();
-
-    animationFrame = requestAnimationFrame(update);
-    }
-
-  function endGame() {
-    isPlaying = false;
-    isGameOver = true;
-    cancelAnimationFrame(animationFrame);
-    if (score > highScore) {
-      highScore = score;
-      localStorage.setItem('balloonHighScore', highScore);
-    }
-    finalScoreDisplay.textContent = score;
-    gameOverHighScoreDisplay.textContent = highScore;
-    gameOverScreen.classList.remove('hidden');
   }
 
-  function updateHighScoreDisplay() {
-    startHighScoreDisplay.textContent = highScore;
-  }
+  animationFrame = requestAnimationFrame(update);
+}
 
-  function init() {
-    const resizeCanvas = () => {
-      const container = document.getElementById('game-container');
-      canvas.width = container.clientWidth;
-      canvas.height = container.clientHeight;
-    };
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-    resetGame();
+function endGame() {
+  isPlaying = false;
+  isGameOver = true;
+  cancelAnimationFrame(animationFrame);
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem('balloonHighScore', highScore);
   }
+  finalScoreDisplay.textContent = score;
+  gameOverHighScoreDisplay.textContent = highScore;
+  gameOverScreen.classList.remove('hidden');
+}
 
-  init();
+function updateHighScoreDisplay() {
+  startHighScoreDisplay.textContent = highScore;
+}
+
+function init() {
+  const resizeCanvas = () => {
+    const container = document.getElementById('game-container');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+  };
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  resetGame();
+}
+
+init();
 });
-
-
