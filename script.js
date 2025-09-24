@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isGameOver = false;
 
   const GRAVITY = 0.3;
-  const JUMP_POWER = -8;
+  const JUMP_POWER = -5;
   const OBSTACLE_WIDTH = 50;
   const OBSTACLE_GAP = 150;
   const SCROLL_SPEED = 2;
@@ -154,4 +154,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   init();
 });
+
 
