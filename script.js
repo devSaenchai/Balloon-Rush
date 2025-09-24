@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Start game loop
         if (gameLoop) clearInterval(gameLoop);
-        gameLoop = setInterval(update, 1000 / 120);
+        gameLoop = setInterval(update, 1000 / 60);
     }
 
     function update() {
@@ -188,5 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     init();
 });
+
 
 
