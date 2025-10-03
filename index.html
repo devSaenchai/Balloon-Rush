@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird</title>
+    <title>Flappy Birdy</title>
     <style>
         * {
             margin: 0;
@@ -175,7 +175,7 @@
         <canvas id="gameCanvas"></canvas>
         <div id="scoreBoard">0</div>
         <div id="highScore">HI: 0</div>
-        <div id="instructions">👆 TAP TO FLY 👆</div>
+        <div id="instructions">TAP TO FLY</div>
         <div id="gameOver">
             <h1>GAME OVER</h1>
             <p id="finalScore">Score: 0</p>
@@ -199,7 +199,7 @@
         const setCanvasSize = () => {
             const maxW = window.innerWidth - 40;
             const maxH = window.innerHeight - 40;
-            const aspectRatio = 400 / 600;
+            const aspectRatio = 400 / 700;
             
             if (maxW / maxH > aspectRatio) {
                 canvas.height = Math.min(maxH, 600);
@@ -634,3 +634,4 @@
     </script>
 </body>
 </html>
+
